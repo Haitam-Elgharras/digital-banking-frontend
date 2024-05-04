@@ -4,18 +4,17 @@
         <div class="card">
             <div class="card-header">Customers</div>
             <div class="card-body">
-                <form [formGroup]="searchFromGroup" (ngSubmit)="handleSearchCustomers()">
-                    <div class="form-row">
-                        <div class="form-group
-                            col-md-6">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" formControlName="keyword">
+                <div *ngIf="searchFromGroup">
+                    <form [formGroup]="searchFromGroup" (ngSubmit)="handleSearchCustomers()">
+                        <div class="input-group">
+                                <label for="name" class="input-group-text">Keyword : </label>
+                                <input type="text" class="form-control" id="name" formControlName="keyword">
+                                <button type="submit" class="btn btn-info">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
                         </div>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
-                </form>
+                    </form>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -29,6 +28,14 @@
                             <td>{{ customer.id }}</td>
                             <td>{{ customer.name }}</td>
                             <td>{{ customer.email }}</td>
+                            <td class="text-end">
+                                <!-- <button class="btn btn-info" (click)="handleEditCustomer(customer)">
+                                <i class="bi bi-pencil"></i> 
+                                </button> -->
+                                <button class="btn btn-danger" (click)="handleDeleteCustomer(customer)">
+                                <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CustomerService } from '../services/customer.service';
-import { customer } from '../models/customer.model';
+import { Customer } from '../models/customer.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 
@@ -11,27 +11,19 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class CustomersComponent {
 
-  customers: Array<customer> | undefined;
+  customers: Array<Customer> | undefined;
   errorMessage: Object = '';
-  searchFromGroup!: FormGroup;
+  searchFromGroup: FormGroup | undefined;
 
   constructor(private customerService:CustomerService,private fb : FormBuilder) { }
 
 
-  ngOnInit() {
-
+  ngOnInit():void {
     this.searchFromGroup = this.fb.group({
       keyword: this.fb.control('')
     });
 
-
-    this.customerService.getCustomers()
-    .subscribe({
-      next: data => {
-        this.customers = data;
-      },
-      error: error => this.errorMessage = error.message
-    });
+    this.handleSearchCustomers();
   }
 
   handleSearchCustomers() {
@@ -39,11 +31,25 @@ export class CustomersComponent {
     .subscribe({
       next: data => {
         this.customers = data;
-        console.log(data);
       },
       error: error => this.errorMessage = error.message
     });
 
   }
+
+    handleDeleteCustomer(customer: Customer) {
+      let c = confirm('Are you sure you want to delete this customer?');
+      if (!c) {
+        return;
+      }
+    this.customerService.deleteCustomer(customer.id).subscribe({
+      next: data => {
+        this.handleSearchCustomers();
+      },
+      error: error => this.errorMessage = error.message
+    });
+      
+  }
+      
   
 }
