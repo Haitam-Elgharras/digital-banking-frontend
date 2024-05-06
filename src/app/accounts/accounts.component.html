@@ -1,1 +1,124 @@
-<p>accounts works!</p>
+<div class="container mt-2">
+    <div class="row">
+        <div class="col col-md-6">
+            <div class="card">
+                <div class="card-header">Accounts</div>
+                <div class="card-body">
+                    <div>
+                        <form *ngIf="searchFromGroup" [formGroup]="searchFromGroup" (ngSubmit)="handleSearchAccount()">
+                            <div class="input-group">
+                                <label for="name" class="input-group-text">accountId :</label>
+                                <input type="text" class="form-control" id="name" formControlName="accountId">
+                                <button type="submit" class="btn btn-info">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <ng-container *ngIf="account as AccountDetails; else failureOrLoading">
+                        <div class="my-2">
+                            <label>Account Id : </label>
+                            <label><strong>{{ account.accountId }}</strong></label>
+                        </div>
+                        <div class="my-2">
+                            <label>Banlence : </label>
+                            <label><strong>{{ account.balance | number:'1.2-2' }}</strong></label>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Operation Date</th>
+                                    <th>Amount</th>
+                                    <th>Operation Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let operation of account.accountOperationDTOS">
+                                    <td>{{ operation.id }}</td>
+                                    <td>{{ operation.operationDate | date:'dd-MM-yyyy' }}</td>
+                                    <td>{{ operation.amount | number:'1.2-2' }}</td>
+                                    <td>{{ operation.operationType }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ul class="nav nav-pills">
+                            <li *ngFor="let item of [].constructor(account.totalPages); let page=index">
+                                <a class="btn ms-1 mt-1" (click)="goToPage(page)" [ngClass]="page==currentPage?'btn-info':'btn-outline-info'">{{page}}</a>
+                            </li>
+                        </ul>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-md-6">
+            <div class="card" *ngIf="account">
+                <div class="card-header">
+                    Perform an operation
+                </div>
+                <div *ngIf="operationSuccessMessage || errorMessage"
+                [ngClass]="{'alert-success': operationSuccessMessage, 'alert-danger': errorMessage}" class="alert m-1">
+                <div>{{operationSuccessMessage || errorMessage}}</div>
+            </div>
+                <div class="card-body">
+                    <form *ngIf="operationFormGroup" [formGroup]="operationFormGroup" (ngSubmit)="handleOperation()">
+                    <!-- make the radio b uttons -->
+                        <div class="d-flex">
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="operationType" id="DEBIT" value="DEBIT" formControlName="operationType">
+                                <label class="form-check-label" for="DEBIT">
+                                    Debit
+                                </label>
+                            </div>
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="operationType" id="CREDIT" value="CREDIT" formControlName="operationType">
+                                <label class="form-check-label" for="CREDIT">
+                                    Credit
+                                </label>
+                            </div>
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="operationType" id="TRANSFER" value="TRANSFER" formControlName="operationType">
+                                <label class="form-check-label" for="TRANSFER">
+                                    Transfer
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group my-2">
+                            <label for="amount" class="input-group mb-2">Amount :</label>
+                            <input type="number" class="form-control" id="amount" formControlName="amount">
+                        </div>
+                        <div class="input-group my-2">
+                            <label for="description" class="input-group mb-2">Description :</label>
+                            <input type="text" class="form-control" id="description" formControlName="description">
+                        </div>
+                        <div class="input-group my-2" *ngIf="operationFormGroup.value.operationType=='TRANSFER'">
+                            <label for="destinationAccountId" class="input-group mb-2">destination Account :</label>
+                            <input type="text" class="form-control" id="destinationAccountId" formControlName="destinationAccountId">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Save Operation
+                            </button>
+                        </div>
+                    
+                    </form>
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template #failureOrLoading>
+        <ng-container *ngIf="errorMessage">
+            <div class="text-danger" *ngIf="errorMessage">
+                {{ errorMessage }}
+            </div>
+        </ng-container>
+
+        <!-- <ng-template #loading>
+            <div class="text-info">Loading...</div>
+        </ng-template> -->
+    </ng-template>
+
+</div>
