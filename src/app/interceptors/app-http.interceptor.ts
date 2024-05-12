@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable, finalize } from 'rxjs';
+import { Observable, catchError, finalize, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
@@ -17,6 +17,14 @@ export class AppHttpInterceptor implements HttpInterceptor {
       headers: request.headers.set('Authorization', 'Bearer ' + this.authService.accessToken)
     });
 
-    return next.handle(req);
+    return next.handle(req).pipe(
+      catchError((error, caught) => {
+        if(error.status === 401) {
+          this.authService.logout();
+        }
+        return throwError(error.message);
+      }
+      ),
+    );
   }
 }

@@ -3,6 +3,7 @@ import { AccountService } from '../services/account.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AccountDetails } from '../models/account.model';
 import { Operation } from '../models/operation.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-accounts',
@@ -21,7 +22,8 @@ export class AccountsComponent {
 
   constructor(
     private accountService: AccountService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {

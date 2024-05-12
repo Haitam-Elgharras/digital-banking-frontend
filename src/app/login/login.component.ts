@@ -30,7 +30,7 @@ handleLogin() {
     {
       next: (data) => {
         this.authService.loadProfile(data);
-        this.router.navigate(['/admin']);
+        this.router.navigateByUrl('/admin/customers');
       },
       error: (error) => {
         console.log(error);

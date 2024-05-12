@@ -19,7 +19,10 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" routerLink="/admin/customers">Search Customers</a></li>
-            <li><a class="dropdown-item" routerLink="/admin/newcustomer">New Customer</a></li>
+
+            <li
+            *ngIf="this.authService.roles.includes('ADMIN')"
+            ><a class="dropdown-item" routerLink="/admin/newcustomer">New Customer</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -29,10 +32,22 @@
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+
+      <ul class="navbar">
+        <li class="nav-item">
+          <a class="nav-link active">
+            {{this.authService.username}}
+          </a>
+        </li>
+        <li>
+          <button 
+          class="btn btn-success"
+          (click)="handleLogout()"
+          >
+            Logout
+          </button>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
